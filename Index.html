@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Ventas y Cocina</title>
+    <title>Sistema Gastronómico Pro</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -51,7 +51,7 @@
             <div class="panel-finalizar">
                 <h3>2. Datos de Entrega y Pago</h3>
                 <form id="form-finalizar-venta">
-                    <input type="text" id="venta-cliente" placeholder="Cliente" required>
+                    <input type="text" id="venta-cliente" placeholder="Nombre del Cliente" required>
                     <select id="venta-servicio">
                         <option value="Para Llevar">Para Llevar</option>
                         <option value="Comer Aquí">Comer Aquí</option>
@@ -65,6 +65,8 @@
                         <option value="Tarjeta">Tarjeta</option>
                     </select>
                     
+                    <textarea id="venta-observacion" placeholder="Observaciones o notas adicionales..."></textarea>
+
                     <div class="checkbox-pago">
                         <input type="checkbox" id="venta-pagado-check"> 
                         <label for="venta-pagado-check"><strong>¿Ya recibiste el pago?</strong></label>
@@ -82,11 +84,12 @@
             <thead>
                 <tr>
                     <th>Orden #</th>
-                    <th>Cliente / Detalles</th>
+                    <th>Cliente / Notas</th>
                     <th>Productos</th>
                     <th>Total</th>
                     <th>¿Pagó?</th>
                     <th>¿Entregado?</th>
+                    <th>Acción</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -94,30 +97,33 @@
     </div>
 
     <div id="reportes" class="tab-content">
-        <h2>Cierre de Caja y Reporte de Comida</h2>
+        <h2>Cierre de Caja y Detalle de Comida</h2>
         <div class="report-grid">
-            <div class="card money">
-                <h4>Total General (Pagado)</h4>
-                <p id="rep-total">Q0.00</p>
-            </div>
-            <div class="card cash">
-                <h4>Efectivo en Caja</h4>
-                <p id="rep-efectivo">Q0.00</p>
-            </div>
-            <div class="card card-pay">
-                <h4>Tarjeta / Otros</h4>
-                <p id="rep-tarjeta">Q0.00</p>
-            </div>
+            <div class="card money"><h4>Total General (Pagado)</h4><p id="rep-total">Q0.00</p></div>
+            <div class="card cash"><h4>Efectivo en Caja</h4><p id="rep-efectivo">Q0.00</p></div>
+            <div class="card card-pay"><h4>Tarjeta / Otros</h4><p id="rep-tarjeta">Q0.00</p></div>
         </div>
 
-        <div class="report-grid" style="margin-top: 20px;">
-            <div class="card food-done">
-                <h4>Comida Despachada</h4>
-                <p id="rep-comida-ok">0 porciones</p>
-            </div>
-            <div class="card food-pending">
-                <h4>Comida Pendiente</h4>
-                <p id="rep-comida-pen">0 porciones</p>
+        <h3 style="margin-top: 30px;">Detalle de Unidades Vendidas</h3>
+        <table id="tabla-reporte-comida">
+            <thead>
+                <tr><th>Nombre del Alimento</th><th>Cantidad Vendida</th></tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div id="modal-editar" class="modal">
+        <div class="modal-content">
+            <h3>Editar Pedido</h3>
+            <input type="hidden" id="edit-index">
+            <label>Cliente:</label>
+            <input type="text" id="edit-cliente">
+            <label>Observaciones:</label>
+            <textarea id="edit-observacion"></textarea>
+            <div class="modal-buttons">
+                <button onclick="cerrarModal()" class="btn-off">Cancelar</button>
+                <button onclick="guardarEdicion()" class="btn-on">Guardar Cambios</button>
             </div>
         </div>
     </div>

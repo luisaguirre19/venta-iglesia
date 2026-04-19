@@ -12,7 +12,7 @@ function openTab(evt, tabName) {
     if(tabName === 'reportes') calcularReportes();
 }
 
-// INVENTARIO
+// --- INVENTARIO ---
 document.getElementById('form-producto').addEventListener('submit', (e) => {
     e.preventDefault();
     inventario.push({
@@ -24,7 +24,7 @@ document.getElementById('form-producto').addEventListener('submit', (e) => {
     e.target.reset();
 });
 
-// VENTA Y CARRITO
+// --- VENTA Y CARRITO ---
 function agregarAlCarrito() {
     const idx = document.getElementById('venta-producto').value;
     const cant = parseInt(document.getElementById('venta-cantidad').value);
@@ -50,7 +50,7 @@ function renderCarrito() {
 
 document.getElementById('form-finalizar-venta').addEventListener('submit', (e) => {
     e.preventDefault();
-    if (carrito.length === 0) return alert("Carrito vacío");
+    if (carrito.length === 0) return alert("El carrito está vacío");
 
     const nuevaVenta = {
         id: ventas.length + 101,
@@ -60,8 +60,9 @@ document.getElementById('form-finalizar-venta').addEventListener('submit', (e) =
         pagoMetodo: document.getElementById('venta-pago').value,
         servicio: document.getElementById('venta-servicio').value,
         tipo: document.getElementById('venta-tipo-orden').value,
+        observacion: document.getElementById('venta-observacion').value,
         entregado: (document.getElementById('venta-tipo-orden').value === "Despacho"),
-        pagado: document.getElementById('venta-pagado-check').checked, // Captura el "chequesito"
+        pagado: document.getElementById('venta-pagado-check').checked,
         fecha: new Date().toLocaleString()
     };
 
@@ -71,64 +72,84 @@ document.getElementById('form-finalizar-venta').addEventListener('submit', (e) =
     guardar();
     renderCarrito();
     e.target.reset();
-    alert("Pedido registrado.");
+    alert("Venta registrada exitosamente");
 });
 
-// GESTIÓN
+// --- GESTIÓN Y EDICIÓN ---
 function actualizarGestion() {
     const tbody = document.querySelector('#tabla-pedidos tbody');
     tbody.innerHTML = '';
 
     ventas.slice().reverse().forEach((v, idxRev) => {
         const i = ventas.length - 1 - idxRev;
-        const itemsStr = v.items.map(it => `${it.cantidad} ${it.nombre}`).join(', ');
+        const itemsStr = v.items.map(it => `• ${it.cantidad} ${it.nombre}`).join('<br>');
 
         tbody.innerHTML += `
             <tr>
-                <td>#${v.id}</td>
-                <td><strong>${v.cliente}</strong><br><span class="badge">${v.servicio}</span> <span class="badge">${v.tipo}</span></td>
-                <td style="font-size:0.8em">${itemsStr}</td>
-                <td>Q${v.total.toFixed(2)} (${v.pagoMetodo})</td>
+                <td><strong>#${v.id}</strong><br><small>${v.fecha}</small></td>
                 <td>
-                    <button class="btn-toggle ${v.pagado ? 'btn-on' : 'btn-off'}" onclick="togglePago(${i})">
-                        ${v.pagado ? 'SÍ ✅' : 'NO ❌'}
-                    </button>
+                    <strong>${v.cliente}</strong><br>
+                    <span class="badge">${v.servicio}</span> <span class="badge">${v.tipo}</span>
+                    ${v.observacion ? `<br><small><em>Nota: ${v.observacion}</em></small>` : ''}
                 </td>
-                <td>
-                    <button class="btn-toggle ${v.entregado ? 'btn-on' : 'btn-off'}" onclick="toggleEntrega(${i})">
-                        ${v.entregado ? 'Listo ✅' : 'Pendiente ⏳'}
-                    </button>
-                </td>
+                <td style="font-size:0.85em">${itemsStr}</td>
+                <td>Q${v.total.toFixed(2)}</td>
+                <td><button class="btn-toggle ${v.pagado ? 'btn-on' : 'btn-off'}" onclick="togglePago(${i})">${v.pagado ? 'SÍ' : 'NO'}</button></td>
+                <td><button class="btn-toggle ${v.entregado ? 'btn-on' : 'btn-off'}" onclick="toggleEntrega(${i})">${v.entregado ? 'SÍ' : 'NO'}</button></td>
+                <td><button onclick="abrirEditar(${i})" class="btn-secundario">Editar</button></td>
             </tr>
         `;
     });
 }
 
+function abrirEditar(index) {
+    const v = ventas[index];
+    document.getElementById('edit-index').value = index;
+    document.getElementById('edit-cliente').value = v.cliente;
+    document.getElementById('edit-observacion').value = v.observacion || '';
+    document.getElementById('modal-editar').style.display = 'block';
+}
+
+function cerrarModal() { document.getElementById('modal-editar').style.display = 'none'; }
+
+function guardarEdicion() {
+    const index = document.getElementById('edit-index').value;
+    ventas[index].cliente = document.getElementById('edit-cliente').value;
+    ventas[index].observacion = document.getElementById('edit-observacion').value;
+    cerrarModal();
+    guardar();
+}
+
 function togglePago(i) { ventas[i].pagado = !ventas[i].pagado; guardar(); }
 function toggleEntrega(i) { ventas[i].entregado = !ventas[i].entregado; guardar(); }
 
-// REPORTES
+// --- REPORTES ---
 function calcularReportes() {
-    let total = 0, efectivo = 0, tarjeta = 0, ok = 0, pen = 0;
+    let total = 0, efectivo = 0, tarjeta = 0;
+    let resumenComida = {};
 
     ventas.forEach(v => {
-        if(v.pagado) { // Solo cuenta lo pagado para el dinero
+        if(v.pagado) {
             total += v.total;
             if(v.pagoMetodo === "Efectivo") efectivo += v.total;
             else tarjeta += v.total;
         }
-        
+        // Sumar detalle de comida por unidades
         v.items.forEach(it => {
-            if(v.entregado) ok += it.cantidad;
-            else pen += it.cantidad;
+            if (!resumenComida[it.nombre]) resumenComida[it.nombre] = 0;
+            resumenComida[it.nombre] += it.cantidad;
         });
     });
 
     document.getElementById('rep-total').innerText = `Q${total.toFixed(2)}`;
     document.getElementById('rep-efectivo').innerText = `Q${efectivo.toFixed(2)}`;
     document.getElementById('rep-tarjeta').innerText = `Q${tarjeta.toFixed(2)}`;
-    document.getElementById('rep-comida-ok').innerText = `${ok} porciones`;
-    document.getElementById('rep-comida-pen').innerText = `${pen} porciones`;
+
+    const tbodyRep = document.querySelector('#tabla-reporte-comida tbody');
+    tbodyRep.innerHTML = '';
+    for (let comida in resumenComida) {
+        tbodyRep.innerHTML += `<tr><td>${comida}</td><td>${resumenComida[comida]} unidades</td></tr>`;
+    }
 }
 
 function guardar() {
@@ -141,10 +162,10 @@ function actualizarTodo() {
     const tbodyInv = document.querySelector('#tabla-inventario tbody');
     const select = document.getElementById('venta-producto');
     tbodyInv.innerHTML = '';
-    select.innerHTML = '<option value="">-- Seleccionar --</option>';
+    select.innerHTML = '<option value="">-- Seleccionar Alimento --</option>';
 
     inventario.forEach((p, i) => {
-        tbodyInv.innerHTML += `<tr><td>${p.nombre}</td><td>Q${p.precio}</td><td>${p.cantidad}</td><td><button onclick="inventario.splice(${i},1);guardar()">Eliminar</button></td></tr>`;
+        tbodyInv.innerHTML += `<tr><td>${p.nombre}</td><td>Q${p.precio}</td><td>${p.cantidad}</td><td><button onclick="inventario.splice(${i},1);guardar()" class="btn-off" style="padding:4px 8px">Eliminar</button></td></tr>`;
         if(p.cantidad > 0) select.innerHTML += `<option value="${i}">${p.nombre} (Q${p.precio})</option>`;
     });
 
