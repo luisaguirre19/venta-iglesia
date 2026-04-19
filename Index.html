@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Ventas y Cocina</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="tabs">
+        <button class="tab-link active" onclick="openTab(event, 'inventario')">📦 Inventario</button>
+        <button class="tab-link" onclick="openTab(event, 'ventas')">🛒 Nueva Venta</button>
+        <button class="tab-link" onclick="openTab(event, 'gestion')">📋 Pedidos</button>
+        <button class="tab-link" onclick="openTab(event, 'reportes')">📊 Reportes</button>
+    </nav>
+
+    <div id="inventario" class="tab-content active">
+        <h2>Gestión de Alimentos</h2>
+        <form id="form-producto" class="main-form">
+            <input type="text" id="prod-nombre" placeholder="Producto" required>
+            <input type="number" id="prod-precio" placeholder="Precio (Q)" step="0.01" required>
+            <input type="number" id="prod-cantidad" placeholder="Stock" required>
+            <button type="submit" class="btn-add">Guardar</button>
+        </form>
+        <table id="tabla-inventario">
+            <thead>
+                <tr><th>Producto</th><th>Precio</th><th>Stock</th><th>Acción</th></tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div id="ventas" class="tab-content">
+        <div class="venta-container">
+            <div class="panel-seleccion">
+                <h3>1. Armar Orden</h3>
+                <div class="input-group">
+                    <select id="venta-producto"></select>
+                    <input type="number" id="venta-cantidad" value="1" min="1">
+                    <button onclick="agregarAlCarrito()" class="btn-secundario">Añadir</button>
+                </div>
+                <div class="carrito-resumen">
+                    <table id="tabla-carrito">
+                        <thead><tr><th>Item</th><th>Cant.</th><th>Subtotal</th><th></th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                    <div id="total-orden">Total: Q0.00</div>
+                </div>
+            </div>
+            <div class="panel-finalizar">
+                <h3>2. Datos de Entrega y Pago</h3>
+                <form id="form-finalizar-venta">
+                    <input type="text" id="venta-cliente" placeholder="Cliente" required>
+                    <select id="venta-servicio">
+                        <option value="Para Llevar">Para Llevar</option>
+                        <option value="Comer Aquí">Comer Aquí</option>
+                    </select>
+                    <select id="venta-tipo-orden">
+                        <option value="Despacho">Despacho Inmediato</option>
+                        <option value="Reserva">Reserva</option>
+                    </select>
+                    <select id="venta-pago">
+                        <option value="Efectivo">Efectivo</option>
+                        <option value="Tarjeta">Tarjeta</option>
+                    </select>
+                    
+                    <div class="checkbox-pago">
+                        <input type="checkbox" id="venta-pagado-check"> 
+                        <label for="venta-pagado-check"><strong>¿Ya recibiste el pago?</strong></label>
+                    </div>
+
+                    <button type="submit" class="btn-finalizar">Registrar Pedido</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="gestion" class="tab-content">
+        <h2>Control de Entregas y Pagos</h2>
+        <table id="tabla-pedidos">
+            <thead>
+                <tr>
+                    <th>Orden #</th>
+                    <th>Cliente / Detalles</th>
+                    <th>Productos</th>
+                    <th>Total</th>
+                    <th>¿Pagó?</th>
+                    <th>¿Entregado?</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div id="reportes" class="tab-content">
+        <h2>Cierre de Caja y Reporte de Comida</h2>
+        <div class="report-grid">
+            <div class="card money">
+                <h4>Total General (Pagado)</h4>
+                <p id="rep-total">Q0.00</p>
+            </div>
+            <div class="card cash">
+                <h4>Efectivo en Caja</h4>
+                <p id="rep-efectivo">Q0.00</p>
+            </div>
+            <div class="card card-pay">
+                <h4>Tarjeta / Otros</h4>
+                <p id="rep-tarjeta">Q0.00</p>
+            </div>
+        </div>
+
+        <div class="report-grid" style="margin-top: 20px;">
+            <div class="card food-done">
+                <h4>Comida Despachada</h4>
+                <p id="rep-comida-ok">0 porciones</p>
+            </div>
+            <div class="card food-pending">
+                <h4>Comida Pendiente</h4>
+                <p id="rep-comida-pen">0 porciones</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

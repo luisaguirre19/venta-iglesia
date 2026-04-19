@@ -1,0 +1,60 @@
+:root {
+    --primary: #2c3e50;
+    --success: #27ae60;
+    --warning: #f39c12;
+    --danger: #e74c3c;
+    --blue: #3498db;
+}
+
+body { font-family: sans-serif; background: #f4f7f6; margin: 0; padding: 20px; }
+
+/* Tabs */
+.tabs { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 3px solid var(--primary); }
+.tab-link { padding: 12px 25px; border: none; background: #ddd; cursor: pointer; font-weight: bold; border-radius: 8px 8px 0 0; }
+.tab-link.active { background: var(--primary); color: white; }
+
+.tab-content { display: none; background: white; padding: 20px; border-radius: 0 0 10px 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+.tab-content.active { display: block; }
+
+/* Tablas y Forms */
+table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+th { background: #f8f9fa; }
+input[type="text"], input[type="number"], select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 10px; box-sizing: border-box; }
+
+/* Checkbox pago */
+.checkbox-pago {
+    background: #e8f6ed;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+.checkbox-pago input { width: auto; margin: 0; }
+
+/* Layout Venta */
+.venta-container { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.panel-seleccion, .panel-finalizar { background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #eee; }
+
+/* Estilo de Reportes */
+.report-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+.card { padding: 20px; border-radius: 10px; color: white; text-align: center; }
+.card h4 { margin: 0; font-size: 0.9em; opacity: 0.9; }
+.card p { margin: 10px 0 0; font-size: 1.8em; font-weight: bold; }
+
+.money { background: var(--primary); }
+.cash { background: var(--success); }
+.card-pay { background: var(--blue); }
+.food-done { background: #8e44ad; }
+.food-pending { background: var(--warning); }
+
+/* Switches / Toggles */
+.btn-toggle { border: none; padding: 8px 12px; border-radius: 20px; cursor: pointer; font-weight: bold; color: white; }
+.btn-on { background: var(--success); }
+.btn-off { background: var(--danger); }
+
+.badge { font-size: 0.7em; background: #eee; padding: 3px 7px; border-radius: 10px; color: #555; }
+.btn-finalizar { background: var(--success); color: white; border: none; padding: 15px; width: 100%; cursor: pointer; border-radius: 5px; font-weight: bold; }
